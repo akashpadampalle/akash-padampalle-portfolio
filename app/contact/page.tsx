@@ -1,15 +1,17 @@
 'use client';
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react"
 import { toast, Bounce } from "react-toastify"
 
 const ContactMe = () => {
 
-    const [name, setName] = useState('')
-    const [contact, setContact] = useState('')
-    const [email, setEmail] = useState('')
-    const [extraDetails, setExtraDetails] = useState('')
+    const [name, setName] = useState("");
+    const [contact, setContact] = useState("");
+    const [email, setEmail] = useState("");
+    const [extraDetails, setExtraDetails] = useState("");
+    const router = useRouter();
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -29,7 +31,7 @@ const ContactMe = () => {
 
 
             try {
-                await fetch("https://akash-padampalle-portfolio-backend.onrender.com/", {
+                await fetch("/api/contact", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -53,6 +55,8 @@ const ContactMe = () => {
                     theme: "light",
                     transition: Bounce,
                 });
+
+                router.push('/');
 
             } catch (error) {
                 toast.error('Something went wrong. 😔', {
