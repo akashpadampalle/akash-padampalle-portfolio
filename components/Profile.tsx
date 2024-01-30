@@ -14,7 +14,7 @@ const Profile = () => {
                         alt="Akash Padampalle"
                         width={192}
                         height={192}
-                        className="overflow-hidden rounded-full"
+                        className=" overflow-hidden rounded-full"
                     />
                 </div>
                 <div className="flex justify-center">
