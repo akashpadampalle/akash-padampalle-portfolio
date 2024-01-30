@@ -31,7 +31,7 @@ const ContactMe = () => {
 
 
             try {
-                await fetch("/api/contact", {
+                const response = await fetch("/api/contact", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -44,19 +44,34 @@ const ContactMe = () => {
                 setEmail('');
                 setExtraDetails('');
 
-                toast.success('I\'ll contact you soon. 🎉', {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Bounce,
-                });
+                if (response.ok) {
+                    toast.success('I\'ll contact you soon. 🎉', {
+                        position: "top-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        transition: Bounce,
+                    });
 
-                router.push('/');
+                    router.push('/');
+                } else {
+                    toast.error('Something went wrong. 😔', {
+                        position: "top-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        transition: Bounce,
+                    });
+                }
+
 
             } catch (error) {
                 toast.error('Something went wrong. 😔', {
