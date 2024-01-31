@@ -1,9 +1,10 @@
 'use client';
 
+import Spinner from "@/components/Spinner";
+import { errorToast, successToast } from "@/utils/toast";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react"
-import { toast, Bounce } from "react-toastify"
 
 const ContactMe = () => {
 
@@ -11,12 +12,14 @@ const ContactMe = () => {
     const [contact, setContact] = useState("");
     const [email, setEmail] = useState("");
     const [extraDetails, setExtraDetails] = useState("");
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         const makeRequest = async () => {
+
             if (!name || !contact || !email) {
                 alert("Please fill out all required fields.");
                 return;
@@ -31,6 +34,7 @@ const ContactMe = () => {
 
 
             try {
+                setLoading(true);
                 const response = await fetch("/api/contact", {
                     method: "POST",
                     headers: {
@@ -39,52 +43,22 @@ const ContactMe = () => {
                     body: JSON.stringify(postData),
                 });
 
-                setName('');
-                setContact('');
-                setEmail('');
-                setExtraDetails('');
-
                 if (response.ok) {
-                    toast.success('I\'ll contact you soon. 🎉', {
-                        position: "top-center",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                        transition: Bounce,
-                    });
-
+                    setName('');
+                    setContact('');
+                    setEmail('');
+                    setExtraDetails('');
+                    successToast('I\'ll contact you soon. 🎉');
                     router.push('/');
                 } else {
-                    toast.error('Something went wrong. 😔', {
-                        position: "top-center",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                        transition: Bounce,
-                    });
+                    errorToast('Something went wrong. 😔')
                 }
 
 
             } catch (error) {
-                toast.error('Something went wrong. 😔', {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Bounce,
-                });
+                errorToast('Something went wrong. 😔')
+            } finally {
+                setLoading(false);
             }
 
         }
@@ -97,7 +71,9 @@ const ContactMe = () => {
     return (
         <div className="px-10 py-4">
             <div className="px-10 py-4 mb-4 text-right">
-                <Link href="/" className="text-purple-600 border-2 rounded-full border-purple-500 px-4 py-2 hover:bg-purple-500 hover:text-white transition-all duration-500 ">
+                <Link
+                    href="/"
+                    className="text-purple-600 border-2 rounded-full border-purple-500 px-4 py-2 hover:bg-purple-500 hover:text-white transition-all duration-500 ">
                     Profile
                 </Link>
             </div>
@@ -155,9 +131,9 @@ const ContactMe = () => {
                 <div className="p-4 mb-4 flex justify-center">
                     <button
                         type="submit"
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    >
-                        Submit
+                        disabled={loading}
+                        className="bg-blue-500 hover:bg-blue-700 disabled:bg-slate-200 min-h-6 min-w-12 text-white font-bold py-2 px-4 rounded">
+                        {loading ? <Spinner /> : "Submit"}
                     </button>
                 </div>
 
